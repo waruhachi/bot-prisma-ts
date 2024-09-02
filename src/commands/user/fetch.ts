@@ -40,11 +40,17 @@ export const autocomplete = async (interaction: AutocompleteInteraction) => {
 }
 
 export default async (_: CommandInteraction, options: CommandOptions<typeof config>): Promise<CommandResult> => {
-    const [user] = await prisma.users.findMany({
+    const user = await prisma.users.findFirst({
         where: {
             name: options.name
         }
     })
+
+    if (!user) {
+        return {
+            content: 'User not found.'
+        }
+    }
 
     return {
         embeds: [
